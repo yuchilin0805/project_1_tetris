@@ -6,79 +6,260 @@ using namespace std;
 
 class space;
 class cmd{
-    public: 
+    public:
         int rows;
-        int cols;       
+        int cols;
         string cmds;
         int col_pos;
 };
 class blocks{
     public:
         friend space;
-        void set_shape(string &t,int check_pt){              //l左 r右 u上 d下         //z左下  c右下 q左上  e右上
+        void get_range(string & t){
+           if(t=="T1"){
+                range=3;
+            }
+            else if(t=="L1"){
+                range=2;
+            }
+            else if(t=="J1"){
+                range=2;
+            }
+            else if(t=="S1"){
+                range=3;
+            }
+            else if(t=="I1"){
+                range=1;
+            }
+            else if(t=="T2"){
+                range=2;
+            }
+            else if(t=="L2"){
+                range=3;
+            }
+            else if(t=="J2"){
+                range=3;
+            }
+            else if(t=="S2"){
+                range=2;
+            }
+            else if(t=="I2"){
+                range=4;
+            }
+
+            else if(t=="T3"){
+                range=3;
+            }
+
+            else if(t=="L3"){
+                range=2;
+            }
+            else if(t=="J3"){
+                range=2;
+            }
+            else if(t=="Z1"){
+                range=3;
+            }
+            else if(t=="O"){
+                range=2;
+            }
+            else if(t=="T4"){
+                range=2;
+            }
+            else if(t=="L4"){
+                range=3;
+            }
+            else if(t=="J4"){
+                range=3;
+            }
+            else if(t=="Z2"){
+                range=2;
+            }
+        }
+        void set_shape(string &t,int check_pt){
+            shape=new char[3];
+            relative_pos=check_pt;          //l左 r右 u上 d下         //z左下  c右下 q左上  e右上  //f 往右跳兩格 g往左跳兩格
+
             type=t;
             if(type=="T1"){
-                if(check_pt==1) strncpy(shape,"yrrz",4);
-                else if(check_pt==2||check_pt>=20) strncpy(shape,"yqrr",4);
-                else if(check_pt==3) strncpy(shape,"yllc",4);
-            }                
+                range=3;
+                if(check_pt==1) strncpy(shape,"rrz",3);
+                else if(check_pt==2||check_pt>=20) {
+                    strncpy(shape,"qrr",3);
+                    relative_pos=2;
+                }
+                else if(check_pt==3) strncpy(shape,"llc",3);
+            }
             else if(type=="L1"){
-                if(check_pt==1) strncpy(shape,"yrqu",4);  
-                else if(check_pt==2) strncpy(shape,"yluu",4);
+                range=2;
+                if(check_pt==1||check_pt>=20){
+                    strncpy(shape,"rqu",3);
+                    relative_pos=1;
+                }
+                else if(check_pt==2) strncpy(shape,"luu",3);
             }
             else if(type=="J1"){
-                if(check_pt==1)strncpy(shape,"yruu",4);
-                else if(check_pt==2)strncpy(shape,"yleu",4);
-            }                
+                range=2;
+                if(check_pt==1||check_pt>=20){
+                    strncpy(shape,"ruu",3);
+                    relative_pos=1;
+                }
+                else if(check_pt==2)strncpy(shape,"leu",3);
+            }
             else if(type=="S1"){
-                if(check_pt==1) strncpy(shape,"yrur",4);
-                else if(check_pt==2) strncpy(shape,"yler",4);
-                else if(check_pt==3) strncpy(shape,"yldl",4);
-            }                
+                range=3;
+                if(check_pt==1||check_pt>=20) {
+                    strncpy(shape,"rur",3);
+                    relative_pos=1;
+                }
+                else if(check_pt==2) strncpy(shape,"ler",3);
+                else if(check_pt==3) strncpy(shape,"ldl",3);
+            }
             else if(type=="I1"){
-                strncpy(shape,"yuuu",4);
-            }                
-            else if(type=="T2")
-                strncpy(shape,"nrqru",4);
-            else if(type=="L2")
-                strncpy(shape,"yurr",4);
-            else if(type=="J2")
-                strncpy(shape,"yrrql",4);
-            else if(type=="S2")
-                strncpy(shape,"nrqrq",4);
-            else if(type=="I2")
-                strncpy(shape,"yrrr",4);
-            else if(type=="T3")
-                strncpy(shape,"yrrq",4);
-            else if(type=="L3")
-                strncpy(shape,"nruul",4);
-            else if(type=="J3")
-                strncpy(shape,"yuur",4);
-            else if(type=="Z1")
-                strncpy(shape,"nrrql",4);
-            else if(type=="O")
-                strncpy(shape,"yrqr",4);
-            else if(type=="T4")
-                strncpy(shape,"yurq",4);
-            else if(type=="L4")
-                strncpy(shape,"yrru",4);
-            else if(type=="J4")        //    ffffffffffffffffff
-                strncpy(shape,"f",4);
-            else if(type=="Z2")
-                strncpy(shape,"yuru",4);
-            for(int i=0;i<4;i++){
+                range=1;
+                strncpy(shape,"uuu",3);
+                if(check_pt>=20){
+                    relative_pos=1;
+                }
+            }
+            else if(type=="T2"){
+                range=2;
+                if(check_pt==1) strncpy(shape,"cuu",3);
+                else if(check_pt==2||check_pt>=20){
+                    strncpy(shape,"qru",3);
+                    relative_pos=2;
+                }
+            }
+            else if(type=="L2"){
+                range=3;
+                if(check_pt==1||check_pt>=20){
+                    strncpy(shape,"urr",3);
+                    relative_pos=1;
+                }
+                else if(check_pt==2)strncpy(shape,"zuf",3);
+                else if (check_pt==3)strncpy(shape,"lld",3);
+            }
+            else if(type=="J2"){
+                range=3;
+                if(check_pt==1||check_pt>=20){
+                    strncpy(shape,"ucr",3);
+                    relative_pos=1;
+                }
+                else if(check_pt==2)strncpy(shape,"rgu",3);
+                else if(check_pt==3)strncpy(shape,"llu",3);
+            }
+            else if(type=="S2"){
+                range=2;
+                if(check_pt==1)strncpy(shape,"cuq",3);
+                else if(check_pt==2||check_pt>=20){
+                    strncpy(shape,"ulu",3);
+                    relative_pos=2;
+                }
+            }
+            else if(type=="I2"){
+                range=4;
+                if(check_pt==1||check_pt>=20){
+                    strncpy(shape,"rrr",3);
+                    relative_pos=1;
+                }
+                else if(check_pt==2) strncpy(shape,"lfr",3);
+                else if(check_pt==3) strncpy(shape,"grf",3);
+                else if(check_pt==4) strncpy(shape,"lll",3);
+            }
+
+            else if(type=="T3"){
+                range=3;
+                if(check_pt==1||check_pt>=20){
+                    strncpy(shape,"rrq",3);
+                    relative_pos=1;
+                }
+                else if(check_pt==2) strncpy(shape,"lec",3);
+                else if(check_pt==3) strncpy(shape,"lle",3);
+            }
+
+            else if(type=="L3"){
+                range=2;
+                if(check_pt==1) strncpy(shape,"rdd",3);
+                else if(check_pt==2||check_pt>=20){
+                    strncpy(shape,"uul",3);
+                    relative_pos=2;
+                }
+            }
+            else if(type=="J3"){
+                range=2;
+                if(check_pt==1||check_pt>=20){
+                    strncpy(shape,"uur",3);
+                    relative_pos=1;
+                }
+                else if(check_pt==2) strncpy(shape,"ldd",3);
+            }
+            else if(type=="Z1"){
+                range=3;
+                if(check_pt==1) strncpy(shape,"rdr",3);
+                else if(check_pt==2||check_pt>=20){
+                  strncpy(shape,"rql",3);
+                  relative_pos=2;
+                }
+                else if(check_pt==3) strncpy(shape,"lul",3);
+            }
+            else if(type=="O"){
+                range=2;
+                if(check_pt==1||check_pt>=20){
+                    strncpy(shape,"rqr",3);
+                    relative_pos=1;
+                }
+                else if(check_pt==2)strncpy(shape,"lur",3);
+            }
+            else if(type=="T4"){
+                range=2;
+                if(check_pt==1||check_pt>=20){
+                    strncpy(shape,"urq",3);
+                    relative_pos=1;
+                }
+                else if(check_pt==2) strncpy(shape,"zuu",3);
+            }
+            else if(type=="L4"){
+                range=3;
+                if(check_pt==1||check_pt>=20){
+                    strncpy(shape,"rru",3);
+                    relative_pos=1;
+                }
+                else if(check_pt==2) strncpy(shape,"lfu",3);
+                else if(check_pt==3) strncpy(shape,"uzl",3);
+            }
+            else if(type=="J4"){
+                range=3;
+                if(check_pt==1) strncpy(shape,"rrd",3);
+                else if(check_pt==2) strncpy(shape,"lfd",3);
+                else if(check_pt==3||check_pt>=20){
+                   strncpy(shape,"ull",3);
+                   relative_pos=3;
+                }
+            }        //    ffffffffffffffffff
+            else if(type=="Z2"){
+                range=2;
+                if(check_pt==1||check_pt>=20){
+                    strncpy(shape,"uru",3);
+                    relative_pos=1;
+                }
+                else if(check_pt==2) strncpy(shape,"uzd",3);
+            }
+           /* for(int i=0;i<4;i++){
                 cout<<shape[i];
             }
-            cout<<endl;
-        }                                  
+            cout<<endl;*/
+        }
     private:
-        char shape[4];
-        string type;                
+        char* shape;
+        string type;
+        int relative_pos;
+        int range;
+        int height;
 };
 
 int read_file(cmd* command){
     int flag=0,i=0;
-    ifstream fin("tetris.data.txt");  
+    ifstream fin("tetris.data.txt");
     do{
         if(!flag){
             fin>>command[i].rows>>command[i].cols;
@@ -89,33 +270,35 @@ int read_file(cmd* command){
             break;
         i++;
     }while(!fin.eof());
-    
+
     fin.close();
     return i;
 }
 class space{
     public:
         void remove();
+        void show();
         space(int a,int b){
             rows=a;
             cols=b;
             window = new int* [rows];
             for(int i=0;i<rows;i++){
                 window[i]=new int [cols];
+                memset(window[i],0,cols*sizeof(int));
             }
-            highest=new int [cols];   
+            highest=new int [cols];
             memset(highest,0,cols*sizeof(int));
         }
        // ~space();
         void push(cmd*,int);
-        int gethigh(int);
+        int gethigh(int,int);
 
     private:
         int rows;
         int cols;
         int **window;
-        int *highest;
-    
+        int *highest;       //準備放東西的那個  下面0
+
 
 };
 void space::push(cmd* command,int cmd_length ){
@@ -124,54 +307,138 @@ void space::push(cmd* command,int cmd_length ){
     blocks block[cmd_length];
     //cout<<gethigh(command[0].col_pos);
     for(i=0;i<cmd_length;i++){
-        block[i].set_shape(command[i].cmds,gethigh(command[i].col_pos)-command[i].col+1);
+
+        row_pos=0;
+        col_pos=0;
+        block[i].get_range(command[i].cmds);
+        block[i].set_shape(command[i].cmds,gethigh(command[i].col_pos-1,block[i].range)-command[i].col_pos+2);
+        //cout<< gethigh(command[i].col_pos,block[i].range)-command[i].col_pos+1<<"sese"<<endl;
+
+        col_pos=command[i].col_pos+block[i].relative_pos-1-1; //減相對的 和題目從1的
+
+        cout<<"hi"<<highest[col_pos];
+        row_pos=rows-highest[col_pos]-1;
+        highest[col_pos]=rows-row_pos;
+
+        window[row_pos][col_pos]=1;
+        cout<<"row "<<row_pos<<endl;
+        cout<<"col "<<col_pos<<endl;
+        cout<<block[i].shape<<endl;
+        for(int m=0;m<3;m++){
+            if(block[i].shape[m]=='u'){
+                row_pos--;
+            //    highest[col_pos]=rows-row_pos-1;
+            }
+            else if(block[i].shape[m]=='d'){
+                row_pos++;
+           //     highest[col_pos]=rows-row_pos-1;
+            }
+            else if(block[i].shape[m]=='l'){
+                col_pos--;
+            }
+            else if(block[i].shape[m]=='r'){
+                col_pos++;
+            }
+            else if(block[i].shape[m]=='q'){
+                col_pos--;
+                row_pos--;
+            }
+            else if(block[i].shape[m]=='e'){
+                col_pos++;
+                row_pos--;
+
+            }
+            else if(block[i].shape[m]=='z'){
+                col_pos--;
+                row_pos++;
+               // highest[col_pos]=rows-row_pos-1;
+            }
+            else if(block[i].shape[m]=='c'){
+                col_pos++;
+                row_pos++;
+            }
+            else if(block[i].shape[m]=='f'){
+                col_pos+=2;
+            }
+            else if(block[i].shape[m]=='g'){
+                col_pos-=2;
+            }
+            //cout<<"colaaa"<<col_pos<<endl;
+            cout<<"row_pos"<<row_pos<<endl;
+            highest[col_pos]=rows-row_pos;
+            if(row_pos<0||row_pos>=rows)
+                continue;
+            //cout<<"highnow"<<highest[col_pos]<<endl;
+            window[row_pos][col_pos]=1;
+            
+
+        }
+
+        remove();
+        show();
     }
 
-/*
-    for(j=command.col_pos;j<=block.highrange;j++){        
-        int** newwindow;
-        newwindow=new int*[rows];
-        for( i=0;i<rows;i++){
-            newwindow[i]=new int [cols];
-        }
 
-
-        
-        if(j==block.highrange){              // 右邊  掉下來卡到的情況
-            newwindow[highest[j]][block.highrange]=1;
-            row_pos=highest[j];         //highest 空的那個
-            col_pos=j;
-            for(int k=0;k<5;k++){
-                if(block.shape[k]=='l'){
-                    col_pos--;
-                }
-                else if(block.shape[k]=='d'){
-                    row_pos--;
-                }
-                else if(){
-
-                }
-                window[row_pos][col_pos]=1;
-            }            
-        }
-        
-
-    }*/
-    //window[highest[j]][j]
-    
 }
-int space::gethigh(int start){
+void space::show(){
+    for(int q=0;q<rows;q++){
+        for(int r=0;r<cols;r++){
+            cout<<window[q][r];
+        }
+        cout<<endl;
+    }
+}
+void space::remove(){
+    int** newwindow;
+    newwindow= new int*[rows];
+    for(int k=0;k<rows;k++){
+        newwindow[k]=new int[cols];
+        memset(newwindow[k],0,cols*sizeof(int));
+    }
+    int new_pos=rows-1;
+    for(int i=rows-1;i>=0;i--){
+        int isfull=1;
+
+        for(int j=0;j<cols;j++){
+            if(window[i][j]==0)
+                isfull=0;
+        }
+        if(isfull==0){
+            memcpy(newwindow[new_pos],window[i],cols*sizeof(window[i][0]));
+            new_pos--;
+        }
+        else{
+            memset(highest,0,cols*sizeof(int));
+            for(int k=rows-1;k>=0;k--){
+                for(int q=0;q<cols;q++){
+                    if(newwindow[k][q]==1){
+                        highest[q]=rows-k;
+                    }
+                }
+            }
+
+        }
+    }
+    for(int i=0;i<rows;i++){
+        delete[] window[i];
+    }
+    delete []window;
+
+    window=newwindow;
+}
+int space::gethigh(int start,int range){        //sth strange
     int i;
+             //
     int tmp=highest[start];
     int high=start;
-    for(i=start+1;i<=4;i++){
-        cout<<highest[i];
+    for(i=start;i<start+range;i++){
+      //  cout<<"high"<<highest[i]<<endl;
         if(highest[i]>tmp){
             tmp=highest[i];
             high=i;
-        }            
+        }
         else if(highest[i]==tmp)
-            high=99;
+            high=i;
     }
     return high;
 }
