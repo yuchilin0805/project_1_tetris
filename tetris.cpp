@@ -354,9 +354,10 @@ void space::push(cmd* command,int cmd_length ){
         }
         else
             window[row_pos][col_pos]=1;
-       /* cout<<"row "<<row_pos<<endl;
+        /*cout<<"row "<<row_pos<<endl;
         cout<<"col "<<col_pos<<endl;
-        cout<<block[i].shape<<endl;
+        for(int m=0;m<3;m++)
+        cout<<block[i].shape[m]<<endl;        
         cout<<command[i].cmds<<endl;*/
         for(int m=0;m<3;m++){
             if(block[i].shape[m]=='u'){
@@ -405,8 +406,11 @@ void space::push(cmd* command,int cmd_length ){
 
 
         }
-
+        
         remove();
+        remove();
+        /*show();
+        cout<<endl;*/
         if(gameover)
             break;
     }
@@ -476,7 +480,7 @@ void space::remove(){
         }
         while(new_pos>=0){
             memcpy(newwindow[new_pos],readyin[readyin_start],cols*sizeof(readyin[readyin_start][0]));
-            cout<<"new"<<new_pos<<endl;
+            //cout<<"new"<<new_pos<<endl;
             memset(readyin[readyin_start],0,cols*sizeof(int));
             readyin_start++;
             new_pos--;
@@ -529,8 +533,7 @@ int space::gethigh(int start,int range,int height,int height_check){
             if(i==start+height_check-1){
                 if(highest[i]+height > tmp){
                     tmp=highest[i]+height;
-                    high=i;
-                    return i;
+                    high=i;                    
                 }
             }
             else{
