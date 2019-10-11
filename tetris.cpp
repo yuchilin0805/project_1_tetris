@@ -15,9 +15,15 @@ class cmd{
 class blocks{
     public:
         friend space;
+        blocks(){
+            height=0;
+            height_check=0;
+        }
         void get_range(string & t){
            if(t=="T1"){
                 range=3;
+                height=1;
+                height_check=2;
             }
             else if(t=="L1"){
                 range=2;
@@ -27,68 +33,86 @@ class blocks{
             }
             else if(t=="S1"){
                 range=3;
+                height=-1;
+                height_check=3;
             }
             else if(t=="I1"){
                 range=1;
             }
             else if(t=="T2"){
                 range=2;
+                height=1;
+                height_check=2;
             }
             else if(t=="L2"){
                 range=3;
+                height=1;
+                height_check=1;
             }
             else if(t=="J2"){
                 range=3;
             }
             else if(t=="S2"){
                 range=2;
+                height=1;
+                height_check=2;
             }
             else if(t=="I2"){
                 range=4;
             }
-
             else if(t=="T3"){
                 range=3;
             }
-
             else if(t=="L3"){
                 range=2;
+                height=2;
+                height_check=2;
             }
             else if(t=="J3"){
                 range=2;
+                height=2;
+                height_check=1;
             }
             else if(t=="Z1"){
                 range=3;
+                height=-1;
+                height_check=1;
             }
             else if(t=="O"){
                 range=2;
             }
             else if(t=="T4"){
                 range=2;
+                height=1;
+                height_check=1;
             }
             else if(t=="L4"){
                 range=3;
             }
             else if(t=="J4"){
                 range=3;
+                height=1;
+                height_check=3;
             }
             else if(t=="Z2"){
                 range=2;
+                height=1;
+                height_check=1;
             }
         }
         void set_shape(string &t,int check_pt){
             shape=new char[3];
-            relative_pos=check_pt;          //l左 r右 u上 d下         //z左下  c右下 q左上  e右上  //f 往右跳兩格 g往左跳兩格
+            relative_pos=check_pt;          //l左 r右 u上 d下         //z左下  c右下 q左上  e右上  //f 往右跳兩格 g往左跳兩格 //h往上跳兩格
 
             type=t;
             if(type=="T1"){
                 range=3;
-                if(check_pt==1) strncpy(shape,"rrz",3);
+                if(check_pt==1) strncpy(shape,"cur",3);
                 else if(check_pt==2||check_pt>=20) {
                     strncpy(shape,"qrr",3);
                     relative_pos=2;
                 }
-                else if(check_pt==3) strncpy(shape,"llc",3);
+                else if(check_pt==3) strncpy(shape,"zul",3);
             }
             else if(type=="L1"){
                 range=2;
@@ -113,7 +137,7 @@ class blocks{
                     relative_pos=1;
                 }
                 else if(check_pt==2) strncpy(shape,"ler",3);
-                else if(check_pt==3) strncpy(shape,"ldl",3);
+                else if(check_pt==3) strncpy(shape,"zle",3);
             }
             else if(type=="I1"){
                 range=1;
@@ -137,7 +161,7 @@ class blocks{
                     relative_pos=1;
                 }
                 else if(check_pt==2)strncpy(shape,"zuf",3);
-                else if (check_pt==3)strncpy(shape,"lld",3);
+                else if (check_pt==3)strncpy(shape,"lzu",3);
             }
             else if(type=="J2"){
                 range=3;
@@ -158,11 +182,12 @@ class blocks{
             }
             else if(type=="I2"){
                 range=4;
-                if(check_pt==1||check_pt>=20){
+                if(check_pt==1)
                     strncpy(shape,"rrr",3);
-                    relative_pos=1;
-                }
-                else if(check_pt==2) strncpy(shape,"lfr",3);
+                else if(check_pt==2||check_pt>=20){
+                    strncpy(shape,"lfr",3);
+                    relative_pos=2;
+                } 
                 else if(check_pt==3) strncpy(shape,"grf",3);
                 else if(check_pt==4) strncpy(shape,"lll",3);
             }
@@ -179,7 +204,7 @@ class blocks{
 
             else if(type=="L3"){
                 range=2;
-                if(check_pt==1) strncpy(shape,"rdd",3);
+                if(check_pt==1) strncpy(shape,"cdh",3);
                 else if(check_pt==2||check_pt>=20){
                     strncpy(shape,"uul",3);
                     relative_pos=2;
@@ -191,11 +216,11 @@ class blocks{
                     strncpy(shape,"uur",3);
                     relative_pos=1;
                 }
-                else if(check_pt==2) strncpy(shape,"ldd",3);
+                else if(check_pt==2) strncpy(shape,"zdh",3);
             }
             else if(type=="Z1"){
                 range=3;
-                if(check_pt==1) strncpy(shape,"rdr",3);
+                if(check_pt==1) strncpy(shape,"crq",3);
                 else if(check_pt==2||check_pt>=20){
                   strncpy(shape,"rql",3);
                   relative_pos=2;
@@ -229,8 +254,8 @@ class blocks{
             }
             else if(type=="J4"){
                 range=3;
-                if(check_pt==1) strncpy(shape,"rrd",3);
-                else if(check_pt==2) strncpy(shape,"lfd",3);
+                if(check_pt==1) strncpy(shape,"rcu",3);
+                else if(check_pt==2) strncpy(shape,"cug",3);
                 else if(check_pt==3||check_pt>=20){
                    strncpy(shape,"ull",3);
                    relative_pos=3;
@@ -242,12 +267,9 @@ class blocks{
                     strncpy(shape,"uru",3);
                     relative_pos=1;
                 }
-                else if(check_pt==2) strncpy(shape,"uzd",3);
+                else if(check_pt==2) strncpy(shape,"zue",3);
             }
-           /* for(int i=0;i<4;i++){
-                cout<<shape[i];
-            }
-            cout<<endl;*/
+           
         }
     private:
         char* shape;
@@ -255,6 +277,7 @@ class blocks{
         int relative_pos;
         int range;
         int height;
+        int height_check;
 };
 
 int read_file(cmd* command){
@@ -291,7 +314,7 @@ class space{
         }
        // ~space();
         void push(cmd*,int);
-        int gethigh(int,int);
+        int gethigh(int,int,int,int);
 
     private:
         int rows;
@@ -311,7 +334,7 @@ void space::push(cmd* command,int cmd_length ){
         row_pos=0;
         col_pos=0;
         block[i].get_range(command[i].cmds);
-        block[i].set_shape(command[i].cmds,gethigh(command[i].col_pos-1,block[i].range)-command[i].col_pos+2);
+        block[i].set_shape(command[i].cmds,gethigh(command[i].col_pos-1,block[i].range,block[i].height,block[i].height_check)-command[i].col_pos+2);
         //cout<< gethigh(command[i].col_pos,block[i].range)-command[i].col_pos+1<<"sese"<<endl;
 
         col_pos=command[i].col_pos+block[i].relative_pos-1-1; //減相對的 和題目從1的
@@ -365,10 +388,11 @@ void space::push(cmd* command,int cmd_length ){
             }
             //cout<<"colaaa"<<col_pos<<endl;
             cout<<"row_pos"<<row_pos<<endl;
+            cout<<"col_pos"<<col_pos<<endl;
             highest[col_pos]=rows-row_pos;
             if(row_pos<0||row_pos>=rows)
                 continue;
-            //cout<<"highnow"<<highest[col_pos]<<endl;
+            cout<<":"<<highest[2]<<endl;
             window[row_pos][col_pos]=1;
             
 
@@ -408,17 +432,24 @@ void space::remove(){
             new_pos--;
         }
         else{
-            memset(highest,0,cols*sizeof(int));
+            /*for(int k=0;k<cols;k++){
+                if(highest[k]!=0)
+                    highest[k]--;
+            }*/
+
+        }
+    }
+    memset(highest,0,cols*sizeof(int));
+            int flag[cols];
+            //memset(flag,0,sizeof(int));
             for(int k=rows-1;k>=0;k--){
                 for(int q=0;q<cols;q++){
                     if(newwindow[k][q]==1){
                         highest[q]=rows-k;
+                    cout<<"kkkkk"<<highest[q]<<endl;
                     }
                 }
             }
-
-        }
-    }
     for(int i=0;i<rows;i++){
         delete[] window[i];
     }
@@ -426,19 +457,42 @@ void space::remove(){
 
     window=newwindow;
 }
-int space::gethigh(int start,int range){        //sth strange
+int space::gethigh(int start,int range,int height,int height_check){        //sth strange
     int i;
              //
     int tmp=highest[start];
     int high=start;
     for(i=start;i<start+range;i++){
       //  cout<<"high"<<highest[i]<<endl;
-        if(highest[i]>tmp){
-            tmp=highest[i];
-            high=i;
+        if(height_check!=0){
+            if(i==start+height_check-1){
+                if(highest[i]+height > tmp){
+                    tmp=highest[i]+height;
+                    high=i;
+                    return i;
+                }
+            }
+            else{
+                if(highest[i]>tmp){
+                    tmp=highest[i];
+                    high=i;
+                }
+                else if(highest[i]==tmp){
+                    high=i;
+                }
+            }
         }
-        else if(highest[i]==tmp)
-            high=i;
+        else{
+            if(highest[i]>tmp){
+                tmp=highest[i];
+                high=i;
+            }
+            else if(highest[i]==tmp){
+                high=i;
+            }
+        }
+        
+        
     }
     return high;
 }
