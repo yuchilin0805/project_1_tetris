@@ -187,7 +187,7 @@ class blocks{
                 else if(check_pt==2||check_pt>=20){
                     strncpy(shape,"lfr",3);
                     relative_pos=2;
-                } 
+                }
                 else if(check_pt==3) strncpy(shape,"grf",3);
                 else if(check_pt==4) strncpy(shape,"lll",3);
             }
@@ -260,7 +260,7 @@ class blocks{
                    strncpy(shape,"ull",3);
                    relative_pos=3;
                 }
-            }        //    ffffffffffffffffff
+            }        
             else if(type=="Z2"){
                 range=2;
                 if(check_pt==1||check_pt>=20){
@@ -269,7 +269,7 @@ class blocks{
                 }
                 else if(check_pt==2) strncpy(shape,"zue",3);
             }
-           
+
         }
     private:
         char* shape;
@@ -279,10 +279,9 @@ class blocks{
         int height;
         int height_check;
 };
-
 int read_file(cmd* command){
     int flag=0,i=0;
-    ifstream fin("tetris.data.txt");
+    ifstream fin("tetris.data");
     do{
         if(!flag){
             fin>>command[i].rows>>command[i].cols;
@@ -311,50 +310,60 @@ class space{
             }
             highest=new int [cols];
             memset(highest,0,cols*sizeof(int));
+            readyin=new int*[5];
+            for(int m=0;m<5;m++){
+                readyin[m]=new int [cols];
+                memset(readyin[m],0,cols*sizeof(int));
+            }
         }
-       // ~space();
+       
         void push(cmd*,int);
         int gethigh(int,int,int,int);
+        void out_file();
+        int check_full();
 
     private:
         int rows;
         int cols;
         int **window;
         int *highest;       //準備放東西的那個  下面0
-
+        int **readyin;
+        int gameover;
 
 };
 void space::push(cmd* command,int cmd_length ){
     int i=1,j=1;
     int col_pos,row_pos;
     blocks block[cmd_length];
-    //cout<<gethigh(command[0].col_pos);
+    gameover=0;
     for(i=0;i<cmd_length;i++){
 
         row_pos=0;
         col_pos=0;
         block[i].get_range(command[i].cmds);
         block[i].set_shape(command[i].cmds,gethigh(command[i].col_pos-1,block[i].range,block[i].height,block[i].height_check)-command[i].col_pos+2);
-        //cout<< gethigh(command[i].col_pos,block[i].range)-command[i].col_pos+1<<"sese"<<endl;
+        
 
         col_pos=command[i].col_pos+block[i].relative_pos-1-1; //減相對的 和題目從1的
 
-        cout<<"hi"<<highest[col_pos];
+        //cout<<"hi"<<highest[col_pos];
         row_pos=rows-highest[col_pos]-1;
         highest[col_pos]=rows-row_pos;
-
-        window[row_pos][col_pos]=1;
-        cout<<"row "<<row_pos<<endl;
+        if(row_pos<0||row_pos>=rows){
+            readyin[-row_pos][col_pos]=1;
+        }
+        else
+            window[row_pos][col_pos]=1;
+       /* cout<<"row "<<row_pos<<endl;
         cout<<"col "<<col_pos<<endl;
         cout<<block[i].shape<<endl;
+        cout<<command[i].cmds<<endl;*/
         for(int m=0;m<3;m++){
             if(block[i].shape[m]=='u'){
                 row_pos--;
-            //    highest[col_pos]=rows-row_pos-1;
             }
             else if(block[i].shape[m]=='d'){
                 row_pos++;
-           //     highest[col_pos]=rows-row_pos-1;
             }
             else if(block[i].shape[m]=='l'){
                 col_pos--;
@@ -374,7 +383,6 @@ void space::push(cmd* command,int cmd_length ){
             else if(block[i].shape[m]=='z'){
                 col_pos--;
                 row_pos++;
-               // highest[col_pos]=rows-row_pos-1;
             }
             else if(block[i].shape[m]=='c'){
                 col_pos++;
@@ -386,23 +394,46 @@ void space::push(cmd* command,int cmd_length ){
             else if(block[i].shape[m]=='g'){
                 col_pos-=2;
             }
-            //cout<<"colaaa"<<col_pos<<endl;
-            cout<<"row_pos"<<row_pos<<endl;
-            cout<<"col_pos"<<col_pos<<endl;
+            else if(block[i].shape[m]=='h'){
+                row_pos-=2;
+            }
             highest[col_pos]=rows-row_pos;
             if(row_pos<0||row_pos>=rows)
-                continue;
-            cout<<":"<<highest[2]<<endl;
-            window[row_pos][col_pos]=1;
-            
+                readyin[-row_pos][col_pos]=1;
+            else
+                window[row_pos][col_pos]=1;
+
 
         }
 
         remove();
-        show();
+        if(gameover)
+            break;
     }
+    out_file();
 
-
+}
+int space::check_full(){
+    for(int i=1;i<5;i++){
+        for(int j=0;j<cols;j++)
+            if(readyin[i][j]==1)
+                return 1;
+    }
+    return 0;
+}
+void space::out_file(){
+    ofstream fout;
+    fout.open("Tetris.output",ios::out);
+    if(!fout){
+        cout<<"nofile"<<endl;
+    }
+    for(int q=0;q<rows;q++){
+        for(int r=0;r<cols;r++){
+            fout<<window[q][r];
+        }
+        fout<<endl;
+    }
+    fout.close();
 }
 void space::show(){
     for(int q=0;q<rows;q++){
@@ -420,7 +451,7 @@ void space::remove(){
         memset(newwindow[k],0,cols*sizeof(int));
     }
     int new_pos=rows-1;
-    for(int i=rows-1;i>=0;i--){
+    for(int i=rows-1;i>0;i--){
         int isfull=1;
 
         for(int j=0;j<cols;j++){
@@ -431,12 +462,35 @@ void space::remove(){
             memcpy(newwindow[new_pos],window[i],cols*sizeof(window[i][0]));
             new_pos--;
         }
-        else{
-            /*for(int k=0;k<cols;k++){
-                if(highest[k]!=0)
-                    highest[k]--;
-            }*/
-
+    }
+    int readyin_start=1;
+    if(check_full()==1){
+        int isfull=1;
+        for(int j=0;j<cols;j++){
+            if(window[0][j]==0)
+                isfull=0;
+        }
+        if(isfull==0){
+            memcpy(newwindow[new_pos],window[0],cols*sizeof(window[0][0]));
+            new_pos--;
+        }
+        while(new_pos>=0){
+            memcpy(newwindow[new_pos],readyin[readyin_start],cols*sizeof(readyin[readyin_start][0]));
+            cout<<"new"<<new_pos<<endl;
+            memset(readyin[readyin_start],0,cols*sizeof(int));
+            readyin_start++;
+            new_pos--;
+        }
+    }
+    else if(new_pos>=0){
+        int isfull=1;
+        for(int j=0;j<cols;j++){
+            if(window[0][j]==0)
+                isfull=0;
+        }
+        if(isfull==0){
+            memcpy(newwindow[new_pos],window[0],cols*sizeof(window[0][0]));
+            new_pos--;
         }
     }
     memset(highest,0,cols*sizeof(int));
@@ -446,24 +500,31 @@ void space::remove(){
                 for(int q=0;q<cols;q++){
                     if(newwindow[k][q]==1){
                         highest[q]=rows-k;
-                    cout<<"kkkkk"<<highest[q]<<endl;
+                    //cout<<"kkkkk"<<highest[q]<<endl;
                     }
                 }
             }
+    if(check_full()){
+        gameover=1;
+    }
     for(int i=0;i<rows;i++){
         delete[] window[i];
     }
     delete []window;
-
+    for(int i=0;i<5;i++){
+        memset(readyin[i],0,cols*sizeof(int));
+    }
     window=newwindow;
 }
-int space::gethigh(int start,int range,int height,int height_check){        //sth strange
+int space::gethigh(int start,int range,int height,int height_check){
     int i;
-             //
-    int tmp=highest[start];
+    int tmp;
+    if(height_check==1)
+        tmp=highest[start]+height;
+    else
+        tmp=highest[start];
     int high=start;
     for(i=start;i<start+range;i++){
-      //  cout<<"high"<<highest[i]<<endl;
         if(height_check!=0){
             if(i==start+height_check-1){
                 if(highest[i]+height > tmp){
@@ -491,8 +552,8 @@ int space::gethigh(int start,int range,int height,int height_check){        //st
                 high=i;
             }
         }
-        
-        
+
+
     }
     return high;
 }
@@ -505,10 +566,7 @@ int main(){
     space sp(command[0].rows,command[0].cols);
     sp.push(command,cmd_length);
 
-    //cout<<cmd_length;
-   /* for(int j=0;j<cmd_lenth;j++){
-        cout<<command[j].cmds<<" "<<command[j].col_pos<<endl;
-    }*/
+
 
 return 0;
 }
