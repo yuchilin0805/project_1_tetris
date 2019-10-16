@@ -504,7 +504,6 @@ int space::gethigh(int start,int range,int height,int height_check){
 }
 int main(){
     int rows,cols;
-    int flag=0;
     char *a;
     cmd command[1005];
     int cmd_length=read_file(command);
