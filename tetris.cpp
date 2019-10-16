@@ -155,8 +155,7 @@ class blocks{
             }
             else if(type=="I2"){
                 range=4;
-                if(check_pt==1)
-                    strncpy(shape,"rrr",3);
+                if(check_pt==1) strncpy(shape,"rrr",3);
                 else if(check_pt==2) strncpy(shape,"lfr",3);
                 else if(check_pt==3) strncpy(shape,"grf",3);
                 else if(check_pt==4) strncpy(shape,"lll",3);
@@ -503,8 +502,6 @@ int space::gethigh(int start,int range,int height,int height_check){
     return high;
 }
 int main(){
-    int rows,cols;
-    char *a;
     cmd command[1005];
     int cmd_length=read_file(command);
     space sp(command[0].rows,command[0].cols);
